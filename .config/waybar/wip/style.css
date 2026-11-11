@@ -1,0 +1,122 @@
+@define-color bg       #1a1b26;
+@define-color fg       #c0caf5;
+@define-color muted    #565f89;
+@define-color blue     #7aa2f7;
+@define-color purple   #bb9af7;
+@define-color green    #9ece6a;
+@define-color red      #f7768e;
+@define-color surface  #24283b;
+
+* {
+  font-family: "JetBrainsMono Nerd Font";
+  font-size: 12px;
+  border: none;
+  border-radius: 0;
+  min-height: 0;
+}
+
+window#waybar {
+  background: transparent;
+  color: @fg;
+  border: none;
+}
+
+#workspaces {
+  margin: 0 6px;
+  padding: 0;
+  background: @surface;
+  border-radius: 8px;
+}
+
+#workspaces button {
+  min-width: 18px;
+  min-height: 0;
+  padding: 0 10px;
+  margin: 0;
+  background: transparent;
+  color: @muted;
+  border-radius: 0;
+  box-shadow: none;
+  text-shadow: none;
+}
+
+#workspaces button:hover {
+  background: transparent;
+  color: @fg;
+}
+
+#workspaces button.active {
+  background: transparent;
+  color: @blue;
+}
+
+#workspaces button.urgent {
+  color: @red;
+}
+
+#clock {
+  color: @blue;
+  font-weight: bold;
+  padding: 0 12px;
+  background: @surface;
+  border-radius: 8px;
+}
+
+#pulseaudio,
+#power-profiles-daemon,
+#cpu,
+#memory,
+#temperature,
+#backlight,
+#keyboard-state,
+#battery,
+#tray {
+  padding: 0 10px;
+  background: @surface;
+  border-radius: 8px;
+}
+
+#pulseaudio {
+  color: @purple;
+}
+
+#power-profiles-daemon {
+  font-family: "JetBrainsMono Nerd Font Mono";
+  font-size: 18px;
+  min-width: 18px;
+}
+
+#pulseaudio.muted {
+  color: @muted;
+}
+
+#battery {
+  color: @fg;
+}
+
+#battery.charging {
+  color: @green;
+}
+
+#battery.warning:not(.charging) {
+  color: #e0af68;
+}
+
+#battery.critical:not(.charging) {
+  color: @red;
+}
+
+#tray {
+  margin-right: 6px;
+}
+
+tooltip {
+  background: @bg;
+  border: 1px solid @surface;
+  border-radius: 8px;
+}
+
+tooltip label {
+  color: @fg;
+  padding: 6px;
+}

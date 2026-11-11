@@ -1,0 +1,124 @@
+{
+  "layer": "top",
+  "position": "top",
+  "height": 30,
+  "margin-top": 8,
+  "margin-left": 12,
+  "margin-right": 12,
+  "spacing": 4,
+
+  "modules-left": ["hyprland/workspaces"],
+  "modules-center": ["clock"],
+  "modules-right": [
+    "power-profiles-daemon",
+    "cpu",
+    "memory",
+    "temperature",
+    "backlight",
+    "keyboard-state",
+    "pulseaudio",
+    "battery",
+    "tray",
+  ],
+
+  "hyprland/workspaces": {
+    "format": "{name}",
+    "on-click": "activate",
+    "cursor": 60,
+    "sort-by-number": true,
+  },
+
+  "clock": {
+    "format": "{:%d/%m · %H:%M}",
+    "format-alt": "{:%H:%M}",
+    "tooltip-format": "<tt>{calendar}</tt>",
+    "calendar": {
+      "mode": "year",
+      "mode-mon-col": 3,
+      "format": {
+        "months": "<span color='#7aa2f7'><b>{}</b></span>",
+        "days": "<span color='#c0caf5'>{}</span>",
+        "weeks": "<span color='#565f89'>W{}</span>",
+        "weekdays": "<span color='#bb9af7'><b>{}</b></span>",
+        "today": "<span background='#7aa2f7' foreground='#1a1b26'><b><u>{}</u></b></span>",
+      },
+    },
+  },
+
+  "pulseaudio": {
+    "format": "{volume}% {icon} {format_source}",
+    "format-muted": "󰝟 {format_source}",
+    "format-source": " {volume}%",
+    "format-source-muted": " muted",
+    "format-icons": {
+      "default": ["", "", ""],
+    },
+    "scroll-step": 5,
+    "on-click": "pavucontrol",
+    "on-click-right": "pactl set-source-mute @DEFAULT_SOURCE@ toggle",
+    "cursor": 60,
+  },
+
+  "power-profiles-daemon": {
+    "format": "{icon}",
+    "justify": "center",
+    "tooltip-format": "Perfil de energia: {profile}\nDriver: {driver}",
+    "tooltip": true,
+    "on-click": "sh -c 'case \"$(powerprofilesctl get)\" in power-saver) powerprofilesctl set balanced ;; balanced) powerprofilesctl set performance ;; *) powerprofilesctl set power-saver ;; esac'",
+    "cursor": 60,
+    "format-icons": {
+      "default": "󰓅",
+      "performance": "󰓅",
+      "balanced": "󰗑",
+      "power-saver": "󰌪",
+    },
+  },
+
+  "cpu": {
+    "format": "{usage}% ",
+    "tooltip": false,
+  },
+
+  "memory": {
+    "format": "{used}/{total} ",
+  },
+
+  "temperature": {
+    "hwmon-path": "/sys/class/hwmon/hwmon4/temp1_input",
+    "critical-threshold": 80,
+    "format": "{temperatureC}°C {icon}",
+    "format-icons": ["", "", ""],
+  },
+
+  "backlight": {
+    "format": "{percent}% {icon}",
+    "format-icons": ["", "", "", "", "", "", "", "", ""],
+  },
+
+  "keyboard-state": {
+    "numlock": true,
+    "capslock": true,
+    "format": "{name} {icon}",
+    "format-icons": {
+      "locked": "",
+      "unlocked": "",
+    },
+  },
+
+  "battery": {
+    "interval": 30,
+    "states": {
+      "warning": 25,
+      "critical": 10,
+    },
+    "format": "{icon} {capacity}%",
+    "format-charging": " {capacity}%",
+    "format-icons": ["", "", "", "", ""],
+  },
+
+  "tray": {
+    "icon-size": 14,
+    "spacing": 10,
+    "cursor": 60,
+  },
+}
