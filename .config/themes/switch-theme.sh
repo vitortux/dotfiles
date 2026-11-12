@@ -2,69 +2,104 @@
 
 set -eu
 
-themes_dir="$HOME/.config/themes"
-waybar_dir="$HOME/.config/waybar"
+themes_root="$HOME/.config/themes"
+waybar_config_dir="$HOME/.config/waybar"
 
-if [ "$#" -eq 0 ]; then
-    if ! command -v rofi >/dev/null 2>&1; then
-        echo "Rofi não encontrado; informe o tema como argumento." >&2
-        exit 1
-    fi
+fail() {
+    printf 'hypr-theme: %s\n' "$*" >&2
+    exit 1
+}
 
-    themes=$(find "$themes_dir" -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | sort)
-    if [ -z "$themes" ]; then
-        echo "Nenhum tema encontrado em $themes_dir" >&2
-        exit 1
-    fi
-
-    theme=$(printf '%s\n' "$themes" | rofi -dmenu -i -p "Tema") || exit 0
-    [ -n "$theme" ] || exit 0
-elif [ "$#" -eq 1 ]; then
-    theme=$1
-else
-    echo "Uso: hypr-theme [nome-do-tema]" >&2
+show_usage() {
+    printf 'Uso: hypr-theme [nome-do-tema]\n' >&2
     exit 2
-fi
+}
 
-case "$theme" in
-    ''|*[!A-Za-z0-9_-]*)
-        echo "Nome de tema inválido: $theme" >&2
-        exit 2
-        ;;
-esac
+list_themes() {
+    for theme_path in "$themes_root"/*; do
+        [ -d "$theme_path" ] || continue
+        [ -L "$theme_path" ] && continue
+        printf '%s\n' "${theme_path##*/}"
+    done | sort
+}
 
-theme_dir="$themes_dir/$theme"
-hypr_config="$theme_dir/hypr/theme.conf"
-waybar_config="$theme_dir/waybar/config.jsonc"
-waybar_style="$theme_dir/waybar/style.css"
+select_theme() {
+    case "$#" in
+        1)
+            selected_theme=$1
+            ;;
+        0)
+            command -v rofi >/dev/null 2>&1 ||
+                fail "Rofi não encontrado."
 
-if [ ! -f "$hypr_config" ]; then
-    echo "Configuração Hyprland não encontrada: $hypr_config" >&2
-    exit 1
-fi
+            available_themes=$(list_themes)
+            [ -n "$available_themes" ] ||
+                fail "Nenhum tema encontrado em $themes_root."
 
-if [ ! -f "$waybar_config" ]; then
-    echo "Configuração Waybar não encontrada: $waybar_config" >&2
-    exit 1
-fi
+            selected_theme=$(printf '%s\n' "$available_themes" |
+                rofi -dmenu -i -p "Tema") || exit 0
 
-# O link current seleciona um pacote de tema para Hyprland e Waybar.
-ln -sfnT "$theme" "$themes_dir/current"
+            [ -n "$selected_theme" ] || exit 0
+            ;;
+        *)
+            show_usage
+            ;;
+    esac
+}
 
-# O Waybar procura esses nomes fixos em ~/.config/waybar.
-ln -sfnT "../themes/current/waybar/config.jsonc" "$waybar_dir/config.jsonc"
-if [ -f "$waybar_style" ]; then
-    ln -sfnT "../themes/current/waybar/style.css" "$waybar_dir/style.css"
-else
-    rm -f "$waybar_dir/style.css"
-fi
+validate_theme() {
+    case "$selected_theme" in
+        ''|*[!A-Za-z0-9_-]*)
+            fail "Nome de tema inválido: $selected_theme"
+            ;;
+    esac
 
-hyprctl reload
+    selected_theme_dir="$themes_root/$selected_theme"
+    hypr_theme_config="$selected_theme_dir/hypr/theme.conf"
+    waybar_theme_config="$selected_theme_dir/waybar/config.jsonc"
+    waybar_theme_style="$selected_theme_dir/waybar/style.css"
 
-if pgrep -x waybar >/dev/null 2>&1; then
-    pkill -USR2 -x waybar || true
-else
-    waybar >/dev/null 2>&1 &
-fi
+    [ -f "$hypr_theme_config" ] ||
+        fail "Configuração Hyprland não encontrada: $hypr_theme_config"
+    [ -f "$waybar_theme_config" ] ||
+        fail "Configuração Waybar não encontrada: $waybar_theme_config"
+}
 
-echo "Tema aplicado: $theme"
+activate_theme() {
+    # O link current seleciona o pacote de tema para ambos os aplicativos.
+    ln -sfnT "$selected_theme" "$themes_root/current"
+
+    # O Waybar procura config.jsonc e style.css em ~/.config/waybar.
+    ln -sfnT \
+        "../themes/current/waybar/config.jsonc" \
+        "$waybar_config_dir/config.jsonc"
+
+    if [ -f "$waybar_theme_style" ]; then
+        ln -sfnT \
+            "../themes/current/waybar/style.css" \
+            "$waybar_config_dir/style.css"
+    else
+        rm -f "$waybar_config_dir/style.css"
+    fi
+}
+
+reload_desktop() {
+    hyprctl reload
+
+    if pgrep -x waybar >/dev/null 2>&1; then
+        pkill -USR2 -x waybar || true
+    else
+        waybar >/dev/null 2>&1 &
+    fi
+}
+
+main() {
+    select_theme "$@"
+    validate_theme
+    activate_theme
+    reload_desktop
+
+    printf 'Tema aplicado: %s\n' "$selected_theme"
+}
+
+main "$@"
