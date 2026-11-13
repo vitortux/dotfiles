@@ -38,29 +38,39 @@ local palette = {
 
 return {
     palette = palette,
-    gaps_out = { top = 10, right = 20, bottom = 20, left = 20 },
-    style = {
-        border_size = 2,
-        active_border = {
-            colors = { palette.blue, palette.magenta },
-            angle = 45,
+    overrides = {
+        general = {
+            gaps_out = { top = 10, right = 20, bottom = 20, left = 20 },
+            col = {
+                active_border = {
+                    colors = { palette.blue, palette.magenta },
+                    angle = 45,
+                },
+                inactive_border = palette.fg_gutter,
+            },
         },
-        inactive_border = palette.fg_gutter,
-        rounding = 10,
-        rounding_power = 2,
-        active_opacity = 1.0,
-        inactive_opacity = 1.0,
-        shadow = {
-            enabled = true,
-            range = 4,
-            render_power = 3,
-            color = palette.bg_dark1,
+        decoration = {
+            shadow = {
+                color = palette.bg_dark1,
+            },
         },
-        blur = {
-            enabled = true,
-            size = 3,
-            passes = 1,
-            vibrancy = 0.1696,
+        group = {
+            col = {
+                border_active = {
+                    colors = { palette.blue, palette.magenta },
+                    angle = 45,
+                },
+                border_inactive = palette.fg_gutter,
+            },
+            groupbar = {
+                col = {
+                    active = {
+                        colors = { palette.blue, palette.magenta },
+                        angle = 45,
+                    },
+                    inactive = palette.fg_gutter,
+                },
+            },
         },
     },
 }
