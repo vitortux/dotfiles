@@ -55,12 +55,12 @@ validate_theme() {
     esac
 
     selected_theme_dir="$themes_root/$selected_theme"
-    hypr_theme_config="$selected_theme_dir/hypr/theme.conf"
+hypr_theme_config="$selected_theme_dir/hypr/theme.lua"
     waybar_theme_config="$selected_theme_dir/waybar/config.jsonc"
     waybar_theme_style="$selected_theme_dir/waybar/style.css"
 
     [ -f "$hypr_theme_config" ] ||
-        fail "Configuração Hyprland não encontrada: $hypr_theme_config"
+        fail "Módulo Lua do tema não encontrado: $hypr_theme_config"
     [ -f "$waybar_theme_config" ] ||
         fail "Configuração Waybar não encontrada: $waybar_theme_config"
 }
