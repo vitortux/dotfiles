@@ -1,53 +1,72 @@
--- Hyprland Lua configuration entry point.
--- Sections and load order follow /usr/share/hypr/hyprland.lua.
+-- This is an example Hyprland Lua config file.
+-- Refer to the wiki for more information.
+-- https://wiki.hypr.land/configuring/
+
+-- Please note not all available settings / options are set here.
+-- For a full list, see the wiki
+
+-- You can (and should!!) split this configuration into multiple files
+-- Create your files separately and then require them like this:
+-- require("myColors")
+
+-- Section structure and base settings are based on:
+-- https://github.com/hyprwm/Hyprland/blob/main/example/hyprland.lua
+-- Personal settings are labelled in their corresponding modules.
 
 local home = os.getenv("HOME")
 local active_theme = dofile(home .. "/.config/themes/current/hypr/theme.lua")
 
--- MONITORS
+------------------
+---- MONITORS ----
+------------------
 require("modules.monitors")
 
--- MY PROGRAMS
--- Values are shared with the keybinding module.
+---------------------
+---- MY PROGRAMS ----
+---------------------
 local programs = require("modules.my_programs")
 
--- AUTOSTART
+-------------------
+---- AUTOSTART ----
+-------------------
 require("modules.autostart")
 
--- ENVIRONMENT VARIABLES
+-------------------------------
+---- ENVIRONMENT VARIABLES ----
+-------------------------------
 require("modules.environment_variables")
 
--- PERMISSIONS
+-----------------------
+----- PERMISSIONS -----
+-----------------------
 require("modules.permissions")
 
--- LOOK AND FEEL
-require("modules.look_and_feel")(active_theme)
+-----------------------
+---- LOOK AND FEEL ----
+-----------------------
+require("modules.look_and_feel")(active_theme.overrides)
 
--- ANIMATIONS
-require("modules.animations")
-
--- WORKSPACE RULES
-require("modules.workspace_rules")
-
--- LAYOUTS
-require("modules.dwindle")
-require("modules.master")
-require("modules.scrolling")
-
--- MISC
+----------------
+----  MISC  ----
+----------------
 require("modules.misc")
 
--- INPUT
+----------------
+---- LAYERS ----
+----------------
+require("modules.layers")
+
+---------------
+---- INPUT ----
+---------------
 require("modules.input")
 
--- GESTURES
-require("modules.gestures")
-
--- PER-DEVICE INPUT CONFIG
-require("modules.devices")
-
--- KEYBINDINGS
+---------------------
+---- KEYBINDINGS ----
+---------------------
 require("modules.keybindings")(programs)
 
--- WINDOWS AND WORKSPACES
+--------------------------------
+---- WINDOWS AND WORKSPACES ----
+--------------------------------
 require("modules.windows_and_workspaces")
